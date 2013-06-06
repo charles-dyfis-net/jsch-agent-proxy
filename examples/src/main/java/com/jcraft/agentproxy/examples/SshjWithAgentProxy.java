@@ -64,13 +64,11 @@ public class SshjWithAgentProxy {
 
     private static Connector getAgentConnector() {
         try {
-            if (SSHAgentConnector.isConnectorAvailable()) {
-                return new SSHAgentConnector(new JNAUSocketFactory());
-            } else if (PageantConnector.isConnectorAvailable()) {
-                return new PageantConnector();
-            }
-        } catch (AgentProxyException e) {
-            System.err.println(e);
+            ConnectorFactory cf = ConnectorFactory.getDefault();
+            return cf.createConnector();
+        }
+        catch(AgentProxyException e){
+            System.out.println(e);
         }
         return null;
     }

@@ -59,17 +59,8 @@ public class TrileadWithAgentProxy {
     }
 
     static TrileadAgentProxy getAgentProxy() {
-	try {
-	    Connector con;
-            if(SSHAgentConnector.isConnectorAvailable()) {
-                USocketFactory usf = new JNAUSocketFactory();
-                con = new SSHAgentConnector(usf);
-            } else if(PageantConnector.isConnectorAvailable()) {
-                con = new PageantConnector();
-            } else {
-                return null;
-            }
-            return new TrileadAgentProxy(con);
+        try {
+            return new TrileadAgentProxy(ConnectorFactory.getDefault().createConnector());
         } catch(AgentProxyException e) {
             return null;
         }
