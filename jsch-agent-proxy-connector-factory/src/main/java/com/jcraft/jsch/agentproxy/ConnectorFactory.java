@@ -29,13 +29,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.jcraft.jsch.agentproxy;
 
-import com.jcraft.jsch.agentproxy.Connector;
-import com.jcraft.jsch.agentproxy.AgentProxyException;
-import com.jcraft.jsch.agentproxy.USocketFactory;
-import com.jcraft.jsch.agentproxy.connector.SSHAgentConnector;
 import com.jcraft.jsch.agentproxy.connector.PageantConnector;
-import com.jcraft.jsch.agentproxy.usocket.NCUSocketFactory;
+import com.jcraft.jsch.agentproxy.connector.SSHAgentConnector;
 import com.jcraft.jsch.agentproxy.usocket.JNAUSocketFactory;
+import com.jcraft.jsch.agentproxy.usocket.NCUSocketFactory;
+
 import java.util.ArrayList;
 
 public abstract class ConnectorFactory {
@@ -60,6 +58,10 @@ public abstract class ConnectorFactory {
   }
 
   public Connector createConnector() throws AgentProxyException {
+      return createConnector(null);
+  }
+
+  public Connector createConnector(LogCallback logger) throws AgentProxyException {
     ArrayList<String> trials = new ArrayList<String>();
 
     String[] _connectors = connectors.split(",");
@@ -70,6 +72,9 @@ public abstract class ConnectorFactory {
             return new PageantConnector();
           }
           catch(AgentProxyException e){
+            if(logger != null) {
+              logger.log(LogCallback.LEVEL_DEBUG, "Unable to connect to Pageant", e);
+            }
             trials.add("pageant");
           }
         }
@@ -86,6 +91,9 @@ public abstract class ConnectorFactory {
               return new SSHAgentConnector(usf);
             }
             catch(AgentProxyException e){
+              if(logger != null) {
+                logger.log(LogCallback.LEVEL_DEBUG, "Unable to connect to ssh-agent via nc", e);
+              }
               trials.add("ssh-agent:nc");
             }
           }
@@ -95,9 +103,20 @@ public abstract class ConnectorFactory {
               return new SSHAgentConnector(usf);
             }
             catch(AgentProxyException e){
+              if(logger != null) {
+                logger.log(LogCallback.LEVEL_DEBUG, "Unable to connect to ssh-agent via jna", e);
+              }
               trials.add("ssh-agent:jna");
             }
+          } else {
+            if(logger != null) {
+              logger.log(LogCallback.LEVEL_INFO, "Request for unknown socket type " + _usocketFactories[j].trim(), null);
+            }
           }
+        }
+      } else {
+        if(logger != null) {
+          logger.log(LogCallback.LEVEL_INFO, "Request for unknown connector type " + _connectors[i].trim(), null);
         }
       }
     }
