@@ -1,8 +1,6 @@
 package com.jcraft.jsch.agentproxy.examples;
 
-import com.jcraft.jsch.agentproxy.AgentProxyException;
-import com.jcraft.jsch.agentproxy.ConnectorFactory;
-import com.jcraft.jsch.agentproxy.TrileadAgentProxy;
+import com.jcraft.jsch.agentproxy.*;
 import com.trilead.ssh2.Connection;
 import com.trilead.ssh2.Session;
 import com.trilead.ssh2.StreamGobbler;
@@ -12,6 +10,17 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class TrileadWithAgentProxy {
+
+    private static class StderrLogger implements LogCallback {
+        @Override
+        public void log(int level, String s, Exception ex) {
+            System.err.println(s);
+            if(ex != null) {
+                ex.printStackTrace(System.err);
+            }
+        }
+    }
+
     public static void main(String[] arg) throws IOException {
         if(arg.length != 2) {
             System.err.println("Usage: test-ssh user@host command");
@@ -60,9 +69,14 @@ public class TrileadWithAgentProxy {
     }
 
     static TrileadAgentProxy getAgentProxy() {
+        LogCallback logger = new StderrLogger();
         try {
-            return new TrileadAgentProxy(ConnectorFactory.getDefault().createConnector());
+            ConnectorFactory cf = ConnectorFactory.getDefault();
+            cf.setPreferredUSocketFactories("jna");
+            Connector c = cf.createConnector(logger);
+            return new TrileadAgentProxy(c);
         } catch(AgentProxyException e) {
+            System.err.println("ERROR: " + e.toString());
             return null;
         }
     }

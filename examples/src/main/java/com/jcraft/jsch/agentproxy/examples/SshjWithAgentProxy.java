@@ -6,8 +6,6 @@ import java.util.*;
 import javax.swing.*;
 
 import com.jcraft.jsch.agentproxy.*;
-import com.jcraft.jsch.agentproxy.usocket.*;
-import com.jcraft.jsch.agentproxy.connector.*;
 import com.jcraft.jsch.agentproxy.sshj.*;
 import net.schmizz.sshj.*;
 import net.schmizz.sshj.connection.channel.direct.*;
