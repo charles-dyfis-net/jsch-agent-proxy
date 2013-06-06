@@ -6,8 +6,8 @@ import com.jcraft.jsch.agentproxy.Connector;
 import com.jcraft.jsch.agentproxy.AgentProxyException;
 import com.jcraft.jsch.agentproxy.RemoteIdentityRepository;
 import com.jcraft.jsch.agentproxy.ConnectorFactory;
-import java.io.*;
-import javax.swing.*; 
+
+import javax.swing.*;
 
 public class JSchWithAgentProxy {
   public static void main(String[] arg){

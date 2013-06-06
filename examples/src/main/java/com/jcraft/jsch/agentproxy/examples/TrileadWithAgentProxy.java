@@ -1,11 +1,12 @@
 package com.jcraft.jsch.agentproxy.examples;
 
-import com.jcraft.jsch.agentproxy.*;
-import com.jcraft.jsch.agentproxy.usocket.*;
-import com.jcraft.jsch.agentproxy.connector.*;
+import com.jcraft.jsch.agentproxy.AgentProxyException;
+import com.jcraft.jsch.agentproxy.ConnectorFactory;
+import com.jcraft.jsch.agentproxy.TrileadAgentProxy;
 import com.trilead.ssh2.Connection;
 import com.trilead.ssh2.Session;
 import com.trilead.ssh2.StreamGobbler;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
